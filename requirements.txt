@@ -1,0 +1,26 @@
+# --- Vision / Deep Learning ---
+ultralytics>=8.1.0          # YOLOv8 (détection + segmentation)
+torch>=2.0.0
+torchvision>=0.15.0
+opencv-python>=4.8.0        # conversion masques -> polygones
+numpy>=1.24.0
+pillow>=10.0.0
+tqdm>=4.66.0
+pyyaml>=6.0
+
+# --- Données / nutrition ---
+pandas>=2.0.0
+scikit-learn>=1.3.0         # scoring recommandation, prétraitement
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# --- Backend ---
+flask>=3.0.0
+flask-cors>=4.0.0
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0      # PostgreSQL
+python-dotenv>=1.0.0
+requests>=2.31.0            # API Open Food Facts
+
+# --- Option : prévision de tendance (Étape avancée) ---
+# tensorflow>=2.15.0        # ou utiliser torch pour le LSTM

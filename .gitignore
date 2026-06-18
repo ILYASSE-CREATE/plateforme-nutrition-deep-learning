@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+.ipynb_checkpoints/
+
+# Données volumineuses (NON versionnées)
+data/FoodSeg103/
+data/food-101/
+data/usda/
+data/recipes/
+data/yolo_dataset/
+*.csv
+!data/samples/*.csv
+
+# Modèles entraînés (poids lourds)
+02_modele_vision/models/*.pt
+02_modele_vision/runs/
+*.pth
+
+# Frontend
+node_modules/
+04_plateforme/frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
