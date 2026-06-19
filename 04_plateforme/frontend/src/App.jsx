@@ -7,6 +7,7 @@ import Profil from './pages/Profil'
 import Analyse from './pages/Analyse'
 import Dashboard from './pages/Dashboard'
 import Historique from './pages/Historique'
+import Barcode from './pages/Barcode'
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem('token')
@@ -66,6 +67,14 @@ export default function App() {
           element={
             <RequireAuth>
               <Layout><Historique /></Layout>
+            </RequireAuth>
+          }
+        />
+                <Route
+          path="/barcode"
+          element={
+            <RequireAuth>
+              <Layout><Barcode /></Layout>
             </RequireAuth>
           }
         />
