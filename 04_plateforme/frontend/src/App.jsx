@@ -8,6 +8,7 @@ import Analyse from './pages/Analyse'
 import Dashboard from './pages/Dashboard'
 import Historique from './pages/Historique'
 import Barcode from './pages/Barcode'
+import Recettes from './pages/Recettes'
 
 function RequireAuth({ children }) {
   const token = localStorage.getItem('token')
@@ -79,6 +80,14 @@ export default function App() {
           }
         />
       </Routes>
+              <Route
+          path="/recettes"
+          element={
+            <RequireAuth>
+              <Layout><Recettes /></Layout>
+            </RequireAuth>
+          }
+        />
     </BrowserRouter>
   )
 }
