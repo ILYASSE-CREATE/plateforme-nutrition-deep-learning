@@ -71,7 +71,7 @@ export default function App() {
             </RequireAuth>
           }
         />
-                <Route
+        <Route
           path="/barcode"
           element={
             <RequireAuth>
@@ -79,8 +79,7 @@ export default function App() {
             </RequireAuth>
           }
         />
-      </Routes>
-              <Route
+        <Route
           path="/recettes"
           element={
             <RequireAuth>
@@ -88,6 +87,9 @@ export default function App() {
             </RequireAuth>
           }
         />
+      </Routes>
     </BrowserRouter>
+  )
+}
   )
 }
