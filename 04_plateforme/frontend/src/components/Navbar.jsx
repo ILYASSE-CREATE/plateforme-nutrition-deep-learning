@@ -12,9 +12,10 @@ export default function Navbar() {
     navigate('/login')
   }
 
-  const navLinks = [
+   const navLinks = [
     { to: '/dashboard', label: 'Tableau de bord' },
     { to: '/analyse', label: 'Analyser' },
+    { to: '/barcode', label: 'Code-barres' },
     { to: '/historique', label: 'Historique' },
     { to: '/profil', label: 'Profil' },
   ]
