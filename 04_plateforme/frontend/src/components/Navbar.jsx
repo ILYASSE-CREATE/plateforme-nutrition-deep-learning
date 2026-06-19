@@ -12,14 +12,14 @@ export default function Navbar() {
     navigate('/login')
   }
 
-   const navLinks = [
+  const navLinks = [
     { to: '/dashboard', label: 'Tableau de bord' },
     { to: '/analyse', label: 'Analyser' },
     { to: '/barcode', label: 'Code-barres' },
+    { to: '/recettes', label: 'Recettes' },
     { to: '/historique', label: 'Historique' },
     { to: '/profil', label: 'Profil' },
   ]
-
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4">
