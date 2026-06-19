@@ -10,6 +10,7 @@ from routes.nutrition import nutrition_bp
 from routes.profil import profil_bp
 from routes.historique import historique_bp
 from routes.barcode import barcode_bp
+from routes.recettes import recettes_bp
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -25,6 +26,7 @@ def create_app(config_class=Config):
     app.register_blueprint(profil_bp)
     app.register_blueprint(historique_bp)
     app.register_blueprint(barcode_bp)
+    app.register_blueprint(recettes_bp)
     with app.app_context():
         db.create_all()
 
