@@ -1,98 +1,217 @@
-# Plateforme web intelligente de reconnaissance alimentaire et de recommandation nutritionnelle
+# Plateforme Web Intelligente de Reconnaissance Alimentaire et de Recommandation Nutritionnelle
 
-Projet de fin d'études — Deep Learning & développement web.
+> Projet de Fin d'Études — Deep Learning & Développement Web  
+> Faculté des Sciences Ben M'Sik — Année universitaire 2025–2026
 
-Plateforme qui reconnaît les aliments d'une assiette par **Deep Learning** (CNN de
-segmentation), estime les portions, puis génère des **recommandations nutritionnelles
-personnalisées et sécurisées** selon le profil médical de l'utilisateur (diabète,
-hypertension, obésité, insuffisance rénale).
+---
+
+## Équipe
+
+| Rôle | Nom |
+|---|---|
+| Étudiant | ELOUARDANI Ilyasse |
+| Étudiant | AAROU Ikram |
+| Encadrant | LOTFI Anass |
+| Encadrant | EL HABIB Ben Lahmar |
+| Encadrante | GUENDOUL Oumaima |
+
+---
+
+## Description du Projet
+
+Plateforme intelligente qui permet à un utilisateur de **photographier son assiette** et d'obtenir instantanément :
+
+- La **détection et segmentation** des aliments par Deep Learning (YOLOv8m-seg)
+- L'**estimation des nutriments** (calories, protéines, glucides, lipides, fibres...)
+- Des **recommandations nutritionnelles personnalisées** selon le profil médical (diabète, hypertension, obésité, insuffisance rénale)
+- Un **historique** des repas et un **tableau de bord** de suivi
 
 > ⚠️ Outil d'aide à la décision et de sensibilisation. **Ne remplace pas** un avis médical.
 
 ---
 
-## Binôme
+## Architecture du Système
 
-- Nom 1 — _________________
-- Nom 2 — _________________
-- Encadrant : _________________
-- Année universitaire : 2025–2026
+```
+Photo de l'assiette + Profil médical de l'utilisateur
+                │
+                ▼
+ ┌─────────────────────────────────────┐
+ │  [1] YOLOv8m-seg (Deep Learning)   │
+ │  Détection + Segmentation           │
+ │  62 classes alimentaires            │
+ │  mAP50 = 0.484 — mAP50-95 = 0.382  │
+ └─────────────────────────────────────┘
+                │
+                ▼
+ ┌─────────────────────────────────────┐
+ │  [2] Estimation des Nutriments      │
+ │  Table nutritionnelle 62 classes    │
+ │  Calories, protéines, glucides...   │
+ └─────────────────────────────────────┘
+                │
+                ▼
+ ┌─────────────────────────────────────┐
+ │  [3] Calcul des Besoins             │
+ │  Formule Mifflin-St Jeor            │
+ │  (IMC, âge, sexe, activité)         │
+ └─────────────────────────────────────┘
+                │
+                ▼
+ ┌─────────────────────────────────────┐
+ │  [4] Moteur de Règles Médicales     │
+ │  Diabète / Hypertension             │
+ │  Obésité / Insuffisance rénale      │
+ └─────────────────────────────────────┘
+                │
+                ▼
+ ┌─────────────────────────────────────┐
+ │  [5] Plateforme Web                 │
+ │  Backend : Flask (Python)           │
+ │  Frontend : React + TailwindCSS     │
+ │  Base de données : PostgreSQL       │
+ └─────────────────────────────────────┘
+```
 
 ---
 
-## Architecture (vue d'ensemble)
+## Modèle de Deep Learning
 
-```
-Photo / code-barres + profil médical
-        │
-        ▼
-[1] CNN de segmentation (YOLOv8-seg) ──► aliments détourés + surface
-        │
-        ▼
-[2] Estimation de portion (surface → grammes) ──► nutriments de l'assiette (USDA)
-        │
-        ▼
-[3] Besoins (formule Mifflin-St Jeor)  +  [4] Moteur de règles médicales
-        │
-        ▼
-[5] Recommandation (plan, recettes, liste de courses, alertes)
-        │
-        ▼
-Plateforme web : API Flask + interface React
-```
+### Dataset : FoodSeg103
 
-Le **Deep Learning** est concentré sur la vision (CNN). Le calcul des besoins utilise
-une **formule médicale validée** (transparente et explicable), pas un modèle boîte noire.
-Un module **LSTM** de prévision de tendance est prévu en option (après le cœur fonctionnel).
-
----
-
-## Structure du dépôt
-
-| Dossier | Contenu |
+| Propriété | Valeur |
 |---|---|
-| `data/` | Échantillons + liens de téléchargement (voir `data/README_data.md`) |
-| `01_preparation_donnees/` | Conversion FoodSeg103 → YOLO, base nutritionnelle, EDA |
-| `02_modele_vision/` | Entraînement YOLOv8-seg, poids, résultats, architecture |
-| `03_logique_nutritionnelle/` | Portion, besoins (Mifflin), règles médicales, recommandation |
-| `04_plateforme/` | Backend Flask + Frontend React |
-| `05_tests/` | Tests utilisateurs |
-| `rapport/`, `poster/` | Livrables PDF |
+| Dataset source | FoodSeg103 |
+| Classes originales | 103 |
+| Classes retenues | **62** |
+| Images d'entraînement | 4 977 |
+| Images de test | 2 133 |
+
+### Modèle : YOLOv8m-seg
+
+| Paramètre | Valeur |
+|---|---|
+| Architecture | YOLOv8m-seg |
+| Paramètres | 27 275 546 |
+| Epochs | 70 |
+| Image size | 640×640 |
+| Batch size | 16 |
+| Optimizer | AdamW |
+| GPU | Tesla T4 (Kaggle) |
+| Durée entraînement | ~5h 46min |
+
+### Résultats
+
+| Métrique | Box | Mask |
+|---|---|---|
+| mAP50 | 0.479 | **0.484** |
+| mAP50-95 | 0.408 | **0.382** |
+| Précision | 0.548 | 0.552 |
+| Rappel | 0.485 | 0.487 |
+
+### Meilleures classes (mAP50 Mask)
+
+| Classe | mAP50 |
+|---|---|
+| Corn | 0.877 |
+| Broccoli | 0.867 |
+| Blueberry | 0.867 |
+| Strawberry | 0.781 |
+| Rice | 0.740 |
+| Banana | 0.737 |
 
 ---
 
-## Installation
+## Structure du Dépôt
+
+```
+plateforme-nutrition-deep-learning/
+│
+├── 01_preparation_donnees/     # Conversion FoodSeg103 → YOLO, EDA
+├── 02_modele_vision/           # Entraînement YOLOv8-seg, résultats
+├── 03_logique_nutritionnelle/  # Calcul portions, besoins, règles médicales
+├── 04_plateforme/
+│   ├── backend/                # API Flask (Python)
+│   └── frontend/               # Interface React
+├── 05_tests/                   # Tests utilisateurs
+├── data/
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Stack Technologique
+
+| Couche | Technologies |
+|---|---|
+| Deep Learning | Python, PyTorch, Ultralytics YOLOv8 |
+| Backend | Flask, Flask-JWT-Extended, SQLAlchemy |
+| Base de données | PostgreSQL |
+| Frontend | React, Vite, TailwindCSS |
+| Entraînement | Kaggle (GPU Tesla T4) |
+| Dataset | FoodSeg103 |
+
+---
+
+## Installation et Lancement
+
+### 1. Cloner le projet
 
 ```bash
-# 1. Cloner
-git clone <lien_du_depot>
-cd Nom1_Nom2
-
-# 2. Environnement Python (3.10+)
-python -m venv venv
-source venv/bin/activate        # Windows : venv\Scripts\activate
-pip install -r requirements.txt
+git clone https://github.com/ILYASSE-CREATE/plateforme-nutrition-deep-learning.git
+cd plateforme-nutrition-deep-learning
 ```
 
-Les données ne sont pas versionnées (voir `data/README_data.md` pour les télécharger).
+### 2. Backend
+
+```bash
+cd 04_plateforme/backend
+pip install -r requirements_backend.txt
+python app.py
+```
+
+> Le modèle YOLOv8 est téléchargé automatiquement depuis Google Drive au premier démarrage.
+
+### 3. Frontend
+
+```bash
+cd 04_plateforme/frontend
+npm install
+npm run dev
+```
 
 ---
 
-## Pipeline de réalisation
+## Fonctionnalités
 
-1. **Préparation & données** — structure, téléchargement, conversion FoodSeg103 → YOLO, base USDA
-2. **Modèle de vision** — entraînement YOLOv8-seg sur Kaggle, évaluation (mIoU, mAP)
-3. **Logique nutritionnelle** — portion, besoins, règles, recommandation
-4. **Plateforme web** — backend Flask + frontend React
-5. **Tests & soutenance** — tests, rapport, poster, démo
-
-Détails complets dans `rapport/` (cahier des charges).
+- Inscription / Connexion avec profil médical (JWT)
+- Analyse d'image — photo → détection des aliments → nutriments
+- Scan code-barres — identification produit
+- Dashboard — suivi nutritionnel quotidien
+- Historique des repas
+- Recommandations personnalisées selon pathologies
+- Recettes adaptées au profil
 
 ---
 
-## Stack
+## 62 Classes Alimentaires Détectées
 
-Python · PyTorch · Ultralytics YOLOv8 · scikit-learn · Flask · PostgreSQL · React · Chart.js
+```
+apple, asparagus, avocado, banana, beans, biscuit, blueberry, bread,
+broccoli, cabbage, carrot, cauliflower, celery stick, cheese butter,
+cherry, chicken duck, chocolate, cilantro mint, corn, cucumber, egg,
+fish, french fries, garlic, grape, green_onion, hot_drink, ice cream,
+juice, kiwi, lemon, lettuce, mango, meat, milk, milkshake, mushroom,
+noodles_pasta, nuts, olives, orange, other ingredients, pastry, peach,
+pear, pepper, pineapple, pizza, potato, pumpkin, rape, raspberry,
+rice, sauce, seafood, soup, soy, strawberry, tofu, tomato,
+white radish, wine
+```
+
+---
+
+*Faculté des Sciences Ben M'Sik — 2025–2026*
 
 ## Dépôt GitHub
 
