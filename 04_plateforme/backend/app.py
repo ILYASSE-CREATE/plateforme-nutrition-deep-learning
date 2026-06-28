@@ -42,10 +42,13 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:3001"])
 
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+_db_url = os.environ.get(
     "DATABASE_URL",
     "postgresql://postgres:password@localhost:5432/nutrition_db"
 )
+if _db_url.startswith("postgresql://"):
+    _db_url = _db_url.replace("postgresql://", "postgresql+psycopg://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = _db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "dev-secret-change-in-prod")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=7)
