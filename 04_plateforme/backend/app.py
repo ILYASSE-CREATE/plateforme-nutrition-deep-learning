@@ -31,13 +31,8 @@ from flask_jwt_extended import (
 )
 from PIL import Image
 
-# Ajouter les modules métier au path
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.insert(0, os.path.join(ROOT, "03_logique_nutritionnelle"))
-
 from besoins_mifflin import besoins_journaliers
 from moteur_regles import evaluer, REGLES
-
 # ─────────────────────────────────────────────
 # Config
 # ─────────────────────────────────────────────
@@ -45,7 +40,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173", "http://localhost:3000"])
+CORS(app, origins=["http://localhost:5173", "http://localhost:3000", "http://localhost:3001"])
 
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL",
