@@ -62,13 +62,15 @@ jwt = JWTManager(app)
 # ─────────────────────────────────────────────
 MODEL = None
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "food_yolov8_best.pt")
-
 def load_model():
     global MODEL
     if MODEL is not None:
         return MODEL
     try:
+        import torch
         from ultralytics import YOLO
+        from ultralytics.nn.tasks import SegmentationModel
+        torch.serialization.add_safe_globals([SegmentationModel])
         if os.path.exists(MODEL_PATH):
             MODEL = YOLO(MODEL_PATH)
             logger.info("Modèle YOLOv8 chargé : %s", MODEL_PATH)
@@ -76,6 +78,8 @@ def load_model():
             logger.warning("Modèle non trouvé : %s — mode démo activé", MODEL_PATH)
     except ImportError:
         logger.warning("ultralytics non installé — mode démo activé")
+    except Exception as e:
+        logger.error("Erreur chargement modele: %s", e)
     return MODEL
 
 # ─────────────────────────────────────────────
